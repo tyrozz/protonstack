@@ -7,7 +7,6 @@ import { siteConfig } from '@/config/site'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 
-
 export default async function Home() {
     const user = await currentUser()
 
@@ -29,7 +28,7 @@ export default async function Home() {
                         Open source. With Next Js 13, Clerk.dev, Stripe, Tailwind CSS, TypeScript, and more.
                     </p>
                     <div className="space-x-4">
-                        <Link href="/login" className={cn(buttonVariants({ size: 'lg' }))}>
+                        <Link href="/sign-in" className={cn(buttonVariants({ size: 'lg' }))}>
                             Get Started
                         </Link>
                         <Link
@@ -47,8 +46,8 @@ export default async function Home() {
                 <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">Features</h2>
                     <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-                        Proton is a starter kit for building a SaaS app including authentication, payments, billing,
-                        and more. It&apos;s built with Next.js, Tailwind CSS, and TypeScript. It does not include a
+                        Proton is a starter kit for building a SaaS app including authentication, payments, billing, and
+                        more. It&apos;s built with Next.js, Tailwind CSS, and TypeScript. It does not include a
                         database, you can add one using Prisma.
                     </p>
                 </div>
