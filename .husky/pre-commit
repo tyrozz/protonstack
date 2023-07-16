@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '🏗️👷 Styling, and testing your project before committing'
+
+npx lint-staged
+
+
+yarn run test-all
+
+
+# echo '🤔... Alright.... It looks good, trying to running the tests now. 🤔'
+# # Running the tests 
+# yarn test || 
+# ( 
+#     echo '❌ ❌ ❌ ❌ There must be failed tests ❌ ❌ ❌ ❌
+#             Check the tests, and try to commit again.'
+#     false;
+
+# )
+
+# If everything passes... Now we can commit
+echo '✅✅  committing this now. ✅✅'
