@@ -6,11 +6,11 @@ export const dashboardConfig: DashboardConfig = {
             title: 'Dashboard',
             href: '/dashboard',
         },
-        {
-            title: 'Support',
-            href: '/support',
-            disabled: true,
-        },
+        // {
+        //     title: 'Support',
+        //     href: '/support',
+        //     disabled: true,
+        // },
     ],
     sidebarNav: [
         {
