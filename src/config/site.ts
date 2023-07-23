@@ -12,6 +12,10 @@ export const siteConfig = {
             title: 'Pricing',
             href: '/pricing',
         },
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
     ],
     links: {
         twitter: 'https://twitter.com/',
