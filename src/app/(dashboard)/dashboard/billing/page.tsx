@@ -5,6 +5,10 @@ import { currentUser } from '@clerk/nextjs'
 
 import { DashboardHeader } from '@/components/header'
 import { DashboardShell } from '@/components/shell'
+import { getUserSubscription } from '@/lib/subscriptions'
+import { SubscriptionDetails } from '@/components/subscription-details'
+
+import { SubscriptionWithProduct } from '@/types/subscriptions'
 
 export const metadata: Metadata = {
     title: 'Billing',
@@ -18,10 +22,13 @@ export default async function BillingPage() {
         redirect('/sign-in')
     }
 
+    const sub = await getUserSubscription()
+
     return (
         <DashboardShell>
             <DashboardHeader heading="Billing" text="Manage your subscription and billing information." />
-            <div className="grid gap-10"></div>
+            <div className="grid gap-10">Your subscription details:</div>
+            <SubscriptionDetails subscription={sub as SubscriptionWithProduct} />
         </DashboardShell>
     )
 }

@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.21.14",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.4",
     "@stripe/stripe-js": "^1.54.1",

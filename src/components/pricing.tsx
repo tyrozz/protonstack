@@ -34,7 +34,6 @@ export function Pricing({ products }: PricingListProps) {
                 body: JSON.stringify({ price }),
             })
             const { sessionId } = await res.json()
-            console.log(sessionId)
             const stripe = await getStripe()
             stripe?.redirectToCheckout({ sessionId })
         } catch (error) {
