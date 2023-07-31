@@ -1,4 +1,7 @@
 import { authMiddleware, redirectToSignIn } from '@clerk/nextjs'
+import { clerkClient } from '@clerk/nextjs'
+import { type UserRole } from './types/auth'
+import { NextResponse } from 'next/server'
 
 export default authMiddleware({
     publicRoutes: ['/', '/about', '/pricing', '/sign-in(.*)', '/sign-up(.*)', '/api(.*)'],
@@ -6,6 +9,18 @@ export default authMiddleware({
         // handle users who aren't authenticated
         if (!auth.userId && !auth.isPublicRoute) {
             return redirectToSignIn({ returnBackUrl: req.url })
+        }
+
+        const user = await clerkClient.users.getUser(auth.userId as string)
+        if (!user) {
+            throw new Error('User not found.')
+        }
+        if (!user.privateMetadata.role) {
+            await clerkClient.users.updateUserMetadata(auth.userId as string, {
+                privateMetadata: {
+                    role: 'user' satisfies UserRole,
+                },
+            })
         }
     },
 })

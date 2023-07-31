@@ -59,8 +59,8 @@ export async function POST(req: Request) {
                         trial_from_plan: true,
                         metadata: { clerkUserId: userId },
                     },
-                    success_url: `${getURL()}/`,
-                    cancel_url: `${getURL()}/`,
+                    success_url: `${getURL()}`,
+                    cancel_url: `${getURL()}`,
                     metadata: { userId: userId },
                 })
             } else if (price.type === 'one_time') {
