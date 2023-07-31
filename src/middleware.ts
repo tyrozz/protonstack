@@ -11,6 +11,11 @@ export default authMiddleware({
             return redirectToSignIn({ returnBackUrl: req.url })
         }
 
+        if (auth.isPublicRoute) {
+            //  For public routes, we don't need to do anything
+            return NextResponse.next()
+        }
+
         const user = await clerkClient.users.getUser(auth.userId as string)
         if (!user) {
             throw new Error('User not found.')
