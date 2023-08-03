@@ -18,7 +18,6 @@ interface PricingListProps {
 }
 
 export function Pricing({ products }: PricingListProps) {
-    console.log(products[0].prices[0])
     const { isLoaded, userId, sessionId, getToken } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
