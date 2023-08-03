@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 
 export default async function PricingPage() {
     const productsWithPrices = await getActiveProductsWithPrices()
+    console.log(productsWithPrices)
     return (
         <>
             <SiteHeader />

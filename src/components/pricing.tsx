@@ -18,6 +18,7 @@ interface PricingListProps {
 }
 
 export function Pricing({ products }: PricingListProps) {
+    console.log(products[0].prices[0])
     const { isLoaded, userId, sessionId, getToken } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
@@ -77,9 +78,14 @@ export function Pricing({ products }: PricingListProps) {
                                             <p className="text-sm font-medium leading-none">
                                                 {price.currency} {(price.unit_amount as number) / 100}
                                             </p>
-                                            <p className="text-sm text-muted-foreground">
+                                            {/* <p className="text-sm text-muted-foreground">
                                                 per {price.recurring?.interval}
-                                            </p>
+                                            </p> */}
+                                            {price.recurring && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    per {price.recurring?.interval}
+                                                </p>
+                                            )}
                                             {!userId && (
                                                 <Button className="w-full">
                                                     <Link href="/sign-in">Start Now</Link>
