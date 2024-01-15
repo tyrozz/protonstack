@@ -56,7 +56,6 @@ export async function POST(req: Request) {
                     allow_promotion_codes: true,
                     // Saving the Clerk user ID as metadata on the Stripe subscription allows us to retrieve the Clerk user ID from the Stripe subscription when we receive a webhook event
                     subscription_data: {
-                        trial_from_plan: true,
                         metadata: { clerkUserId: userId },
                     },
                     success_url: `${getURL()}`,

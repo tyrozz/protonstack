@@ -27,7 +27,7 @@ export default async function Home() {
                         Welcome to ProtonStack: Jump start developing your next Saas project
                     </h1>
                     <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-                        Open source. With Next Js 13, Clerk.dev, Stripe, Tailwind CSS, TypeScript, and more.
+                        Open source. With Next.js 14, Clerk.dev, Stripe, Tailwind CSS, TypeScript, and more.
                     </p>
                     <div className="space-x-4">
                         <Link href="/sign-in" className={cn(buttonVariants({ size: 'lg' }))}>
@@ -57,9 +57,9 @@ export default async function Home() {
                     <div className="relative overflow-hidden rounded-lg border bg-background p-2">
                         <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
                             <div className="space-y-2">
-                                <h3 className="font-bold">Next.js 13</h3>
+                                <h3 className="font-bold">Next.js 14</h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Leverage the latest features of Next.js, including Next.js 13, React 18, and more.
+                                    Leverage the latest features of Next.js, including Next.js 14, React 18, and more.
                                     Experience enhanced performance, better SEO, and static site generation with our
                                     open-source platform.
                                 </p>
