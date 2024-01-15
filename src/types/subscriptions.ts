@@ -64,4 +64,4 @@ export interface SubscriptionWithProduct extends Subscription {
     prices: PriceWithProduct | null
 }
 
-type BillingInterval = 'lifetime' | 'year' | 'month'
+// type BillingInterval = 'lifetime' | 'year' | 'month'

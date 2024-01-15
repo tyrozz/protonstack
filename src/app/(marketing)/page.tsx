@@ -1,7 +1,5 @@
 import Link from 'next/link'
 
-import { currentUser } from '@clerk/nextjs'
-
 import { siteConfig } from '@/config/site'
 
 import { cn } from '@/lib/utils'
@@ -9,8 +7,6 @@ import { buttonVariants } from '@/components/ui/button'
 import { SiteHeader } from '@/components/site-header'
 
 export default async function Home() {
-    const user = await currentUser()
-
     return (
         <>
             <SiteHeader />

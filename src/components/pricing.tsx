@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useUser, SignInButton, useAuth } from '@clerk/nextjs'
 
 import { getStripe } from '@/lib/stripe-utils'
@@ -18,16 +18,14 @@ import { Label } from '@/components/ui/label'
 
 interface PricingListProps {
     products: ProductWithPrices[]
-    afterCheckoutRedirectUrl: string
 }
 
-export function Pricing({ products, afterCheckoutRedirectUrl }: PricingListProps) {
-    const { userId, sessionId, getToken } = useAuth()
+export function Pricing({ products }: PricingListProps) {
+    const { userId } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
     const { user, isLoaded } = useUser()
 
-    const pathname = usePathname()
     const [billingPeriod, setBillingPeriod] = useState<'month' | 'year'>('month')
 
     const handleCheckout = async (price: Price) => {

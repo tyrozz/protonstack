@@ -1,10 +1,6 @@
-import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
 import { getActiveProductsWithPrices } from '@/lib/subscriptions'
-import { siteConfig } from '@/config/site'
 import { Pricing } from '@/components/pricing'
 import { SiteHeader } from '@/components/site-header'
-import { cn } from '@/lib/utils'
 
 export default async function PricingPage() {
     const productsWithPrices = await getActiveProductsWithPrices()
@@ -18,7 +14,7 @@ export default async function PricingPage() {
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu sagittis lorem. Nulla
                         nec mi molestie, suscipit libero ac, semper dolor.{' '}
                     </p>
-                    <Pricing products={productsWithPrices} afterCheckoutRedirectUrl="dashboard" />
+                    <Pricing products={productsWithPrices} />
                 </div>
             </section>
         </>

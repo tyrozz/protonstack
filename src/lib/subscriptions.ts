@@ -1,6 +1,5 @@
 import { stripe } from '@/lib/stripe'
 import { ProductWithPrices, Product, Price, SubscriptionWithProduct, Subscription } from '@/types/subscriptions'
-import { auth } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs'
 import { userPrivateMetadataSchema } from '@/lib/validations/auth'
 

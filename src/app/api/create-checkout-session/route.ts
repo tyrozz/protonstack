@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { stripe } from '@/lib/stripe'
 
 import { clerkClient } from '@clerk/nextjs'
@@ -8,11 +9,11 @@ import { getURL } from '@/lib/utils'
 export async function POST(req: Request) {
     if (req.method === 'POST') {
         // 1. Destructure the price and quantity from the POST body
-        const { price, quantity = 1, metadata = {} } = await req.json()
+        const { price, quantity = 1 } = await req.json()
 
         try {
             // 2. Get the user from Supabase auth
-            const { userId, sessionId } = auth()
+            const { userId } = auth()
             const user = await clerkClient.users.getUser(userId as string)
 
             // 3. Retrieve or create the customer in Stripe

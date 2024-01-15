@@ -1,6 +1,5 @@
 import Link from 'next/link'
 
-import { currentUser } from '@clerk/nextjs'
 import { UserButton } from '@clerk/nextjs'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
 
@@ -12,8 +11,6 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { ManageSubscriptionButton } from '@/components/manage-subscription-button'
 
 export async function SiteHeader() {
-    const user = await currentUser()
-
     return (
         <header className="bg-background sticky top-0 z-40 w-full border-b">
             <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">

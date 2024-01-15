@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 
 import { UserButton } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs'
-import { SignedIn, SignedOut } from '@clerk/nextjs'
+import { SignedIn } from '@clerk/nextjs'
 
 import { dashboardConfig } from '@/config/dashboard'
 import { MainNav } from '@/components/main-nav'

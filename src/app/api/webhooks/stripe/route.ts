@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 
@@ -44,28 +46,53 @@ export async function POST(req: Request) {
         try {
             switch (event.type) {
                 case 'customer.subscription.deleted':
-                    const subs = event.data.object as Stripe.Subscription
-                    const subsDetails = await stripe.subscriptions.retrieve(subs.id, {
-                        expand: ['default_payment_method'],
-                    })
+                    {
+                        const subs = event.data.object as Stripe.Subscription
+                        const subsDetails = await stripe.subscriptions.retrieve(subs.id, {
+                            expand: ['default_payment_method'],
+                        })
 
-                    await clerkClient.users.updateUser(subsDetails?.metadata.clerkUserId as string, {
-                        // Update privateMetadata on the Clerk user record. Update it based on your application needs.
-                        privateMetadata: {
-                            // stripeSubscriptionId: subs.id,
-                            stripeCustomerId: subs.customer as string,
-                            // stripePriceId: subs.items.data[0]?.price.id,
-                            stripeCurrentPeriodEnd: new Date(subs.current_period_end * 1000),
-                        },
-                    })
-                case 'checkout.session.completed':
-                    if (!checkoutSession?.metadata?.userId) {
-                        return new Response(null, { status: 200 })
+                        await clerkClient.users.updateUser(subsDetails?.metadata.clerkUserId as string, {
+                            // Update privateMetadata on the Clerk user record. Update it based on your application needs.
+                            privateMetadata: {
+                                // stripeSubscriptionId: subs.id,
+                                stripeCustomerId: subs.customer as string,
+                                // stripePriceId: subs.items.data[0]?.price.id,
+                                stripeCurrentPeriodEnd: new Date(subs.current_period_end * 1000),
+                            },
+                        })
                     }
-                    if (checkoutSession.mode === 'subscription') {
-                        const subscriptionId = checkoutSession.subscription
+                    break
+                case 'checkout.session.completed':
+                    {
+                        if (!checkoutSession?.metadata?.userId) {
+                            return new Response(null, { status: 200 })
+                        }
+                        if (checkoutSession.mode === 'subscription') {
+                            const subscription = await stripe.subscriptions.retrieve(
+                                checkoutSession.subscription as string
+                            )
+
+                            await clerkClient.users.updateUser(checkoutSession?.metadata?.userId as string, {
+                                privateMetadata: {
+                                    stripeSubscriptionId: subscription.id,
+                                    stripeCustomerId: subscription.customer as string,
+                                    stripePriceId: subscription.items.data[0]?.price.id,
+                                    stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                                },
+                            })
+                        }
+                    }
+                    break
+                case 'invoice.payment_succeeded':
+                    {
+                        if (!checkoutSession?.metadata?.userId) {
+                            return new Response(null, { status: 200 })
+                        }
+                        // Retrieve the subscription details from Stripe.
                         const subscription = await stripe.subscriptions.retrieve(checkoutSession.subscription as string)
 
+                        // Update the price id and set the new period end.
                         await clerkClient.users.updateUser(checkoutSession?.metadata?.userId as string, {
                             privateMetadata: {
                                 stripeSubscriptionId: subscription.id,
@@ -75,23 +102,6 @@ export async function POST(req: Request) {
                             },
                         })
                     }
-                case 'invoice.payment_succeeded':
-                    if (!checkoutSession?.metadata?.userId) {
-                        return new Response(null, { status: 200 })
-                    }
-                    // Retrieve the subscription details from Stripe.
-                    const subscription = await stripe.subscriptions.retrieve(checkoutSession.subscription as string)
-
-                    // Update the price id and set the new period end.
-                    await clerkClient.users.updateUser(checkoutSession?.metadata?.userId as string, {
-                        privateMetadata: {
-                            stripeSubscriptionId: subscription.id,
-                            stripeCustomerId: subscription.customer as string,
-                            stripePriceId: subscription.items.data[0]?.price.id,
-                            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-                        },
-                    })
-
                     break
                 default:
                     throw new Error('Unhandled relevant event!')

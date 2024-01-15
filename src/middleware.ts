@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { authMiddleware, redirectToSignIn } from '@clerk/nextjs'
 import { clerkClient } from '@clerk/nextjs'
 import { type UserRole } from './types/auth'
