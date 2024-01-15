@@ -18,7 +18,7 @@ export default async function PricingPage() {
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu sagittis lorem. Nulla
                         nec mi molestie, suscipit libero ac, semper dolor.{' '}
                     </p>
-                    <Pricing products={productsWithPrices} />
+                    <Pricing products={productsWithPrices} afterCheckoutRedirectUrl="dashboard" />
                 </div>
             </section>
         </>

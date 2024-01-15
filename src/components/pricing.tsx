@@ -1,26 +1,34 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@clerk/nextjs'
+import { useRouter, usePathname } from 'next/navigation'
+import { useUser, SignInButton, useAuth } from '@clerk/nextjs'
 
 import { getStripe } from '@/lib/stripe-utils'
-import { cn } from '@/lib/utils'
+
+import { useState } from 'react'
 
 import { Price } from '@/types/subscriptions'
 import { ProductWithPrices } from '@/types/subscriptions'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import { Icons } from '@/components/icons'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 
 interface PricingListProps {
     products: ProductWithPrices[]
+    afterCheckoutRedirectUrl: string
 }
 
-export function Pricing({ products }: PricingListProps) {
-    const { isLoaded, userId, sessionId, getToken } = useAuth()
+export function Pricing({ products, afterCheckoutRedirectUrl }: PricingListProps) {
+    const { userId, sessionId, getToken } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
+    const { user, isLoaded } = useUser()
+
+    const pathname = usePathname()
+    const [billingPeriod, setBillingPeriod] = useState<'month' | 'year'>('month')
 
     const handleCheckout = async (price: Price) => {
         // In case the user signs out while on the page.
@@ -46,63 +54,82 @@ export function Pricing({ products }: PricingListProps) {
     }
 
     return (
-        <div className="grid grid-cols-1 gap-8 mt-6 xl:mt-12 xl:gap-12 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="w-[350px]">
-                <CardHeader>
-                    <CardTitle>Free</CardTitle>
-                    <CardDescription>Free Subscription for a month</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-4"></CardContent>
-                <CardFooter>
-                    <CardFooter>{!userId && <Button className="w-full">Start now</Button>}</CardFooter>
-                </CardFooter>
-            </Card>
-
+        <>
+            <div className="flex items-center space-x-2">
+                <Switch
+                    onCheckedChange={() => setBillingPeriod(billingPeriod === 'month' ? 'year' : 'month')}
+                    id="yearly-mode"
+                />
+                <Label htmlFor="yearly-mode">{billingPeriod === 'month' ? 'Show Yearly' : 'Yearly'} Plans</Label>
+            </div>
             {products &&
                 products.map((product) => (
-                    <Card key={product.id} className={cn('w-[380px]')}>
-                        <CardHeader>
-                            <CardTitle>{product.name} Plan</CardTitle>
-                            <CardDescription>{product.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid gap-4">
-                            <div>
-                                {product.prices.map((price, index) => (
-                                    <div
-                                        key={index}
-                                        className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-                                    >
-                                        <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                                        <div className="space-y-1">
-                                            <p className="text-sm font-medium leading-none">
-                                                {price.currency} {(price.unit_amount as number) / 100}
-                                            </p>
-                                            {/* <p className="text-sm text-muted-foreground">
-                                                per {price.recurring?.interval}
-                                            </p> */}
-                                            {price.recurring && (
-                                                <p className="text-sm text-muted-foreground">
-                                                    per {price.recurring?.interval}
-                                                </p>
+                    <div
+                        key={product.id}
+                        className="grid w-full items-start gap-10 rounded-lg border p-10 md:grid-cols-[1fr_200px]"
+                    >
+                        <div className="grid gap-6">
+                            <h3 className="text-xl font-bold sm:text-2xl">
+                                What&apos;s included in the {product.name} plan
+                            </h3>
+                            <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+                                {product &&
+                                    product.metadata &&
+                                    (product.metadata as { features: string }) &&
+                                    Object.entries(JSON.parse((product.metadata as { features: string }).features)).map(
+                                        ([key, value]) => (
+                                            <li key={key} className="flex items-center">
+                                                <Icons.check className="mr-2 h-4 w-4" />
+                                                {value as string}
+                                            </li>
+                                        )
+                                    )}
+                            </ul>
+                        </div>
+                        <div className="flex flex-col gap-4 text-center">
+                            {product.prices &&
+                                product.prices
+                                    .filter((price) => price.recurring?.interval === billingPeriod)
+                                    .map((price) => (
+                                        <div key={price.id}>
+                                            <div>
+                                                <h4 className="text-2xl font-bold">
+                                                    {price.currency && price.currency?.toUpperCase()}{' '}
+                                                    {(price.unit_amount as number) / 100}
+                                                </h4>
+                                                {price.recurring && (
+                                                    <p className="text-sm font-medium text-muted-foreground">
+                                                        per {price.recurring?.interval}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            {!user && (
+                                                <SignInButton
+                                                    mode="modal"
+                                                    afterSignInUrl="/pricing"
+                                                    afterSignUpUrl="/onboarding"
+                                                >
+                                                    <Button className="w-full">
+                                                        <p>Start now</p>
+                                                    </Button>
+                                                </SignInButton>
                                             )}
-                                            {!userId && (
-                                                <Button className="w-full">
-                                                    <Link href="/sign-in">Start Now</Link>
-                                                </Button>
-                                            )}
-                                            {userId && (
+                                            {user && (
                                                 <Button onClick={() => handleCheckout(price)} className="w-full">
                                                     Checkout
                                                 </Button>
                                             )}
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                        <CardFooter></CardFooter>
-                    </Card>
+                                    ))}
+                        </div>
+                    </div>
                 ))}
-        </div>
+
+            <div className="mx-auto flex w-full max-w-[58rem] flex-col gap-4">
+                <p className="max-w-[85%] leading-normal text-muted-foreground sm:leading-7">
+                    Did not like the product?<strong> Please let us know.</strong>
+                </p>
+            </div>
+        </>
     )
 }

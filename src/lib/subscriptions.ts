@@ -5,29 +5,31 @@ import { currentUser } from '@clerk/nextjs'
 import { userPrivateMetadataSchema } from '@/lib/validations/auth'
 
 export const getActiveProductsWithPrices = async (): Promise<ProductWithPrices[]> => {
-    const stripeProducts = await stripe.products.list({ active: true })
-    const stripePrices = await stripe.prices.list({ active: true })
+    try {
+        const stripeProducts = await stripe.products.list({ active: true })
+        const stripePrices = await stripe.prices.list({ active: true })
 
-    const products = stripeProducts.data.map((product) => {
-        return {
-            ...(product as Product),
-        }
-    }) as Product[]
+        const products = stripeProducts.data.map((product) => ({ ...(product as Product) }))
 
-    const prices = stripePrices.data.map((price) => {
-        return {
-            ...price,
-            product_id: products.find((product) => product.id === price.product)?.id,
-        }
-    }) as Price[]
+        const prices = stripePrices.data.map((price) => {
+            const matchingProduct = products.find((product) => product.id === price.product)
+            const product_id = matchingProduct?.id || null
 
-    const productsWithPrices = products.map((product) => {
-        return {
+            return {
+                ...price,
+                product_id,
+            }
+        }) as Price[]
+
+        const productsWithPrices = products.map((product) => ({
             ...product,
             prices: prices.filter((price) => price.product_id === product.id),
-        }
-    }) as ProductWithPrices[]
-    return productsWithPrices as ProductWithPrices[]
+        })) as ProductWithPrices[]
+
+        return productsWithPrices
+    } catch (error) {
+        return []
+    }
 }
 
 export const getUserSubscription = async () => {
